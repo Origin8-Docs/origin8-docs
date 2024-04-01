@@ -19,14 +19,19 @@ The structure of any event you send is: `Map<String, EntityPropertyValue>`
 
 It's a map where:
 - The keys are `strings`
-- The values are objects, each containing the following string fields:
+- The values are objects, each containing the following fields:
     - `value`
     - `values`
     - `embeddedEntity`
     - `propertyType`
 
-For simple properties, you only need to specify the `value` and `propertyType`. If you are working with complex properties 
-like embedded objects or lists, additional configuration may be required.
+For simple properties, you only need to specify the `value` and `propertyType`. 
+
+For nested objects, you can set it on the `embeddedEntity` field. This field has a structure of `Map<String, EntityPropertyValue>`. It has a recursive object definition so you may embed objects several levels deep. DreamPipe supports only 64 levels deep due to a limitation in BigQuery.
+
+For list values, you can use the `values` field which has a structure of `List<EntityPropertyValue>`.
+
+
 >>>>>>> suggestion:YADTO.md
 
 Here are the [currently available propertyTypes](../src/main/java/com/origin8/eventreceiver/adapters/dto/PropertyType.java).
