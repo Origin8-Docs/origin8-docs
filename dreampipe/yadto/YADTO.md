@@ -4,6 +4,7 @@ When we submit data to the pipeline we need to explicitly specify the data type.
 
 ## The YADTO structure
 
+<<<<<<< HEAD:YADTO.md
 The structure of any event you send is: Map<String, EntityPropertyValue>
 
 That is to say, it's a map where the keys are strings and the values are an object with the following string fields:
@@ -13,6 +14,20 @@ That is to say, it's a map where the keys are strings and the values are an obje
 - propertyType
 
 In most cases, you will only use `value` and `propertyType` unless you are using an embedded object or list.
+=======
+The structure of any event you send is: `Map<String, EntityPropertyValue>`
+
+It's a map where:
+- The keys are `strings`
+- The values are objects, each containing the following string fields:
+    - `value`
+    - `values`
+    - `embeddedEntity`
+    - `propertyType`
+
+For simple properties, you only need to specify the `value` and `propertyType`. If you are working with complex properties 
+like embedded objects or lists, additional configuration may be required.
+>>>>>>> suggestion:YADTO.md
 
 Here are the [currently available propertyTypes](../src/main/java/com/origin8/eventreceiver/adapters/dto/PropertyType.java).
 
