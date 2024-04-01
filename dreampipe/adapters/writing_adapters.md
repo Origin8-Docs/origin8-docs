@@ -2,6 +2,13 @@
 
 The adapters are components responsible for extracting data and writing them to the Event Receiver Service. The adapter determines the structure of your entities and describes them explicitly, so they are understood downstream.
 
+The steps are generally as follows:
+1. Pull the raw data from your external source
+2. Rename and restructure your data.
+3. Transform into the [YADTO](/dreampipe/yadto/YADTO.md) format. (This can be performed using a DreamPipe library)
+
+
+## <u>A working example</u>
 For example, you may have pulled the following update from Salesforce for a Lead.
 <details>
 <summary><b>Expand to view JSON for Lead</b></summary>
@@ -18,9 +25,6 @@ For example, you may have pulled the following update from Salesforce for a Lead
     "FirstName": "firstName",
     "Name": "firstName lastName",
     "Company": "My Company",
-    "Street": "123 Fake Street",
-    "City": "Miami",
-    "PostalCode": "12345",
     "Country": "United States",
     "Address": {
         "city": "Miami",
@@ -43,13 +47,118 @@ For example, you may have pulled the following update from Salesforce for a Lead
   "IsConverted": false,
   "ConvertedDate": null,
   "IsUnreadByOwner": false,
-  "CreatedDate": "2023-10-27T13:41:08.000+0000"
+  "CreatedDate": "2023-10-27T13:41:08.000+0000",
+  "LastModifiedDate": "2024-03-05T21:26:12.000+0000"
 }
 ```
 </details>
 
-You may wish to pull in a subset of this data, and ... (TBC)
+You may wish to pull in a subset of this data, and change the key values to your own internal naming convention. In Java, we can take a subset of the fields, and even include some nested fields from the Address object, and move them to a flat structure. 
 
+<details> 
+<summary><b>Expand to see Java Example</b></summary>
+
+```java
+public SalesforceDreamPipeLead transformJson(String jsonInput) {
+    SalesforceLead salesforceLead = new ObjectMapper().readValue(jsonInput, SalesforceLead.class);
+    SalesforceDreamPipeLead salesforceDreamPipeLead = SalesforceDreamPipeLead.builder()
+                    .leadPhone(salesforceLead.getPhone())
+                    .email(salesforceLead.getEmail())
+                    .city(salesforceLead.getAddress().getCity())
+                    .country(salesforceLead.getAddress().getCountry())
+                    .createdOn(salesforceLead.getCreatedDate())
+                    .timestamp(salesforceLead.getLastModifiedDate())
+                    .build();
+    
+    return salesforceDreamPipeLead;
+}
+
+@Data
+@JsonIgnoreProperties(ignoreUnknown = true)
+class SalesforceLead {
+    private String Phone;
+    private String Email;
+    private Date CreatedDate;
+    private Date LastModifiedDate;
+    private Address Address;
+}
+
+@Data
+@JsonIgnoreProperties(ignoreUnknown = true)
+class SalesforceAddress {
+    private String city;
+    private String country;
+}
+
+@Data
+@Builder
+class SalesforceDreamPipeLead {
+    private String leadPhone;
+    private String email;
+    private String city;
+    private String country;
+    private Date createdOn;
+    private Date timestamp;
+}
+```
+</details>
+
+Now we will add a step that will transform it into a DreamPipe payload, ready to send to the Event Receiver Service.
+
+<details> 
+<summary><b>Expand to see Java Example</b></summary>
+
+```java
+public Map<String, EntityPropertyValue> transformJson(String jsonInput) {
+    SalesforceLead salesforceLead = new ObjectMapper().readValue(jsonInput, SalesforceLead.class);
+    SalesforceDreamPipeLead salesforceDreamPipeLead = SalesforceDreamPipeLead.builder()
+                    .leadPhone(salesforceLead.getPhone())
+                    .email(salesforceLead.getEmail())
+                    .city(salesforceLead.getAddress().getCity())
+                    .country(salesforceLead.getAddress().getCountry())
+                    .createdOn(salesforceLead.getCreatedDate())
+                    .timestamp(salesforceLead.getLastModifiedDate())
+                    .build();
+
+    Map<String, EntityPropertyValue> dreamPipePayload = DreamPipePayload.builder()
+            .payload(campaignSnapshot)
+            .eventSource("myOrganization/salesforce-adapter") // eventSource is currently a required field
+            .eventVersion("1.0.0") // eventVersion is optional, you can use this for your own tracking of your object schema if you wish
+            .build();
+    return dreamPipePayload;
+}
+
+@Data
+@JsonIgnoreProperties(ignoreUnknown = true)
+class SalesforceLead {
+    private String Phone;
+    private String Email;
+    private Date CreatedDate;
+    private Date LastModifiedDate;
+    private Address Address;
+}
+
+@Data
+@JsonIgnoreProperties(ignoreUnknown = true)
+class SalesforceAddress {
+    private String city;
+    private String country;
+}
+
+@Data
+@Builder
+class SalesforceDreamPipeLead {
+    private String leadPhone;
+    private String email;
+    private String city;
+    private String country;
+    private Date createdOn;
+    private Date timestamp;
+}
+```
+</details>
+
+Your data is now ready to send to the Event Receiver Service!
 
 ## <u>Writing data directly into DreamPipe</u>
 
