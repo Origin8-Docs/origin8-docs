@@ -25,6 +25,8 @@ The adapters need to normalize your data. You do not want to be constrained by y
 
 Once the conversion is complete, it's time to pass the event onto the Event Receiver Service.
 
+It's important to note that you can also store your own data directly into DreamPipe. If you were to write your own CRM system, you would use DreamPipe as your Database. This helps to unify your architecture between external and internal data sources.
+
 For more information, see the section on [Writing your Adapter](/dreampipe/adapters/writing_adapters.md)
 
 ### <u>The Event Receiver Service (ERS)</u>
