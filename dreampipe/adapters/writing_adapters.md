@@ -6,7 +6,7 @@ The steps are generally as follows:
 1. Pull the raw data from your external source
 2. Rename and restructure your data.
 3. Transform into the [YADTO](/dreampipe/yadto/YADTO.md) format. (This can be performed using a DreamPipe library)
-4. Send the transformed data to the ERS
+4. Send the YADTO data to the ERS.
 
 
 ## <u>A working example</u>
