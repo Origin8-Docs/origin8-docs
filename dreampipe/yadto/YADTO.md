@@ -3,9 +3,7 @@
 When we submit data to the pipeline we need to explicitly specify the data type. We use our own internal protocol written in JSON.
 
 ## The YADTO structure
-
-<<<<<<< HEAD:YADTO.md
-The structure of any event you send is: Map<String, EntityPropertyValue>
+The structure of any event you send is: `Map<String, EntityPropertyValue>`
 
 That is to say, it's a map where the keys are strings and the values are an object with the following string fields:
 - value
@@ -14,7 +12,7 @@ That is to say, it's a map where the keys are strings and the values are an obje
 - propertyType
 
 In most cases, you will only use `value` and `propertyType` unless you are using an embedded object or list.
-=======
+
 The structure of any event you send is: `Map<String, EntityPropertyValue>`
 
 It's a map where:
@@ -32,27 +30,10 @@ For nested objects, you can set it on the `embeddedEntity` field. This field has
 For list values, you can use the `values` field which has a structure of `List<EntityPropertyValue>`.
 
 
->>>>>>> suggestion:YADTO.md
-
 Here are the [currently available propertyTypes](../src/main/java/com/origin8/eventreceiver/adapters/dto/PropertyType.java).
 
-## Important fields
-<<<<<<< Question: are those fields required? or just suggested? 
-The following fields should be added to the event payload as important metadata:
-```json
-{
-  "version": {
-    "value": "1.0.0",
-    "propertyType": "String"
-  },
-  "eventSource": {
-    "value": "origin8cares/my-microservice-name",
-    "propertyType": "String"
-  }
-}
-```
-
-You should also have a field that acts an id. It must be unique for the entity it represents. The name should be added to the `identifierProperties` in the [configuration you add in step 1.1](/docs/adding_configurations.md)
+### Important fields
+You should have a field that acts an id. It must be unique for the entity it represents. The name should be added to the `identifierProperties` in your entity configuration in the ERS.
 
 ```json
 {
@@ -62,43 +43,14 @@ You should also have a field that acts an id. It must be unique for the entity i
   }
 }
 ```
-=======
-The ERS requires specific fields in the payload to handle events appropriately. Include the following fields:
 
-**Required fields:**
-- version: Specify the version of the event schema.
-  ```json
-  "version": {
-    "value": "1.0.0",
-    "propertyType": "String"
-  }
-  ```
-- eventSource: Indicate the source system or service that generated the event.
-  ```json
-  "eventSource": {
-    "value": "origin8cares/my-adapter-name",
-    "propertyType": "String"
-  }
-  ```
-- externalIdentifier: Provide a unique identifier for the event.
-  ```json
-    "externalIdentifier": {
-      "value": "123ABC",
-      "propertyType": "String"
-    }
-  ```
-  
-**Recommended fields:**
-
-- timestamp: Include the timestamp when the event occurred. If not provided, the ERS will use the current time.
+Include a field which represents when the entity was last modified.
   ```json
     "timestamp": {
       "value": "2021-10-07T01:04:08.000+0000",
       "propertyType": "String"
     }
   ```
-  
->>>>>>> suggestion2:YADTO.md
 
 ## Example of conversions
 
@@ -113,7 +65,8 @@ Consider the following JSON structure:
   "name": "Daniel Craggs",
   "age": 21,
   "timeOfBirth": "2002-01-01T00:16:40.000+0000",
-  "heightInCm": 209.12
+  "heightInCm": 209.12,
+  "lastModified": "2024-04-01T19:16:40.149+0000"
 }
 ```
 
@@ -142,20 +95,14 @@ To convert this to a YADTO object, we can retain the keys and replace the values
     "value": "209.12",
     "propertyType": "Double"
   },
-  "version": {
-    "value": "1.0.0",
-    "propertyType": "String"
-  },
-  "eventSource": {
-    "value": "origin8cares/my-microservice-name",
-    "propertyType": "String"
+  "lastModified": {
+    "value": "2024-04-01T19:16:40.149+0000",
+    "propertyType": "DateTime"
   }
 }
 ```
-
 </details>
 
-Notice how the version and eventSource metadata have been inserted as additional fields.
 
 ## 2. List properties
 
@@ -170,6 +117,7 @@ Now let's add a `parts` list to the object. Our JSON object would look like this
     "age": 21,
     "timeOfBirth": "2002-01-01T00:16:40.000+0000",
     "heightInCm": 209.12,
+    "lastModified": "2024-04-01T19:16:40.149+0000",
     "parts": [
         "arms",
         "legs",
@@ -201,6 +149,10 @@ Now lets convert this to YADTO:
   "heightInCm": {
     "value": "209.12",
     "propertyType": "Double"
+  },
+  "lastModified": {
+    "value": "2024-04-01T19:16:40.149+0000",
+    "propertyType": "DateTime"
   },
   "parts": {
     "propertyType": "List",
@@ -242,6 +194,7 @@ Here is the object as JSON:
     "age": 21,
     "timeOfBirth": "2002-01-01T00:16:40.000+0000",
     "heightInCm": 209.12,
+    "lastModified": "2024-04-01T19:16:40.149+0000",
     "parts": [
         "arms",
         "legs",
@@ -284,6 +237,10 @@ And now as YADTO:
   "heightInCm": {
     "value": "209.12",
     "propertyType": "Double"
+  },
+  "lastModified": {
+    "value": "2024-04-01T19:16:40.149+0000",
+    "propertyType": "DateTime"
   },
   "parts": {
     "propertyType": "List",
