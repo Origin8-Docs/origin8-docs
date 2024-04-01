@@ -1,11 +1,12 @@
 # <u>Writing Adapters</u>
 
-The adapters are components responsible for extracting data and writing them to the Event Receiver Service. The adapter determines the structure of your entities and describes them explicitly, so they are understood downstream.
+The adapters are components responsible for extracting data and sending them to the Event Receiver Service. The adapter determines the structure of your entities and describes them explicitly, so they are understood downstream.
 
 The steps are generally as follows:
 1. Pull the raw data from your external source
 2. Rename and restructure your data.
 3. Transform into the [YADTO](/dreampipe/yadto/YADTO.md) format. (This can be performed using a DreamPipe library)
+4. Send the transformed data to the ERS
 
 
 ## <u>A working example</u>
@@ -169,6 +170,8 @@ Below is an example of an architecture where two sources are unified. An end use
 Transcript Service has its own web UI which the end user interacts with. It also writes the updates directly to the ERS. There's no database attached directly to the Transcript Service.
 
 In this example the end user adds a label to a transcript of a phone call, and then updates the Lead's name in Salesforce. You can see how the information quickly flows into the same path. And when we read the data, we use the same approach regardless of where the data was originally sourced from.
+<<<<<<< Suggestion: Is the Transcript service different from an any other Adapter? Is there a difference between Send Update and Write Update? If not then I would suggest using same terminology for simplicity 
+<<<<<<< Suggestion: In the diagram, maybe rename `Transcript Service` to ` Transcript Adapter` for the sake of clarity
 ![unified_write.png](unified_write.png)
 
 The Transcript Service can then read the current state from the Event Query Service as illustrated below: 
