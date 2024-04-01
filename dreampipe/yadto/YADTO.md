@@ -32,7 +32,7 @@ like embedded objects or lists, additional configuration may be required.
 Here are the [currently available propertyTypes](../src/main/java/com/origin8/eventreceiver/adapters/dto/PropertyType.java).
 
 ## Important fields
-
+<<<<<<< Question: are those fields required? or just suggested? 
 The following fields should be added to the event payload as important metadata:
 ```json
 {
@@ -57,9 +57,45 @@ You should also have a field that acts an id. It must be unique for the entity i
   }
 }
 ```
+=======
+The ERS requires specific fields in the payload to handle events appropriately. Include the following fields:
+
+**Required fields:**
+- version: Specify the version of the event schema.
+  ```json
+  "version": {
+    "value": "1.0.0",
+    "propertyType": "String"
+  }
+  ```
+- eventSource: Indicate the source system or service that generated the event.
+  ```json
+  "eventSource": {
+    "value": "origin8cares/my-adapter-name",
+    "propertyType": "String"
+  }
+  ```
+- externalIdentifier: Provide a unique identifier for the event.
+  ```json
+    "externalIdentifier": {
+      "value": "123ABC",
+      "propertyType": "String"
+    }
+  ```
+  
+**Recommended fields:**
+
+- timestamp: Include the timestamp when the event occurred. If not provided, the ERS will use the current time.
+  ```json
+    "timestamp": {
+      "value": "2021-10-07T01:04:08.000+0000",
+      "propertyType": "String"
+    }
+  ```
+  
+>>>>>>> suggestion2:YADTO.md
 
 ## Example of conversions
-
 
 ## 1. Flat properties 
 Consider the following JSON structure:
@@ -114,7 +150,7 @@ To convert this to a YADTO object, we can retain the keys and replace the values
 
 </details>
 
-Notice how the version and eventSource metadata have been inserted as additional fields
+Notice how the version and eventSource metadata have been inserted as additional fields.
 
 ## 2. List properties
 
