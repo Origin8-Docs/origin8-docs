@@ -4,9 +4,9 @@ The producers are components responsible for sending data to the Event Receiver 
 
 Producers can be written in two ways:
 #### Extractor
-- An Extractor Producer takes data from an external source, transforms it and then relays it to the ERS
+- An Extractor-Producer takes data from an external source, transforms it and then relays it to the ERS
 #### Direct
-- A Direct Producer generates its own data and sends it to the ERS
+- A Direct-Producer generates its own data and sends it to the ERS
 
 The steps are generally as follows:
 1. Pull the raw data from your external source (Extractor mode only)
@@ -14,7 +14,7 @@ The steps are generally as follows:
 3. Transform into the [YADTO](/dreampipe/yadto/YADTO.md) format. (This can be performed using a DreamPipe library)
 4. Send the YADTO data to the ERS.
 
-## <u>Unifying our Producers</u>
+## <u>Unifying the Producers</u>
 
 You may have a webservice that generates data and wish to store it in DreamPipe directly. As well as data extracted from a 3rd party platform such as Salesforce. With DreamPipe, we unify our external and internal sources of data so that our architecture is the same for both. This allows us to replace third party tool functionality with our own seamlessly when we're ready. It also allows us to change vendors easily.
 
@@ -29,7 +29,7 @@ In this example the end user adds a label to a transcript of a phone call, and t
 The Transcript Service can then read the current state from the Event Query Service as illustrated below:
 ![transcript_read.png](transcript_read.png)
 
-## <u>A working example of an Extractor Producer</u>
+## <u>An example of an Extractor-Producer</u>
 In this example, we're going to take data from Salesforce and transform it into a DreamPipe payload.
 
 For example, you may have pulled the following update from Salesforce for a Lead.
@@ -180,5 +180,38 @@ class SalesforceDreamPipeLead {
 }
 ```
 </details>
+
+Your data is now ready to send to the Event Receiver Service!
+
+
+## <u>An example of a Direct-Producer</u>
+In this example, we're going to generate our own data and transform it into a DreamPipe payload.
+
+For example, you have received a request to create a new label in a transcript.
+
+<details> 
+<summary><b>Expand to see Java Example</b></summary>
+
+```java
+public Map<String, EntityPropertyValue> generateDreampipePayload(TranscriptLabelRequest transcriptLabelRequest) {
+    Map<String, EntityPropertyValue> dreamPipePayload = DreamPipePayload.builder()
+            .payload(transcriptLabelRequest)
+            .eventSource("myOrganization/transcript-service") // eventSource is currently a required field
+            .eventVersion("1.0.0") // eventVersion is optional, you can use this for your own tracking of your object schema if you wish
+            .build();
+    return salesforceDreamPipeLead;
+}
+
+@Data
+@JsonIgnoreProperties(ignoreUnknown = true)
+class TranscriptLabelRequest {
+    private String transcriptId;
+    private String labelName;
+    private int transcriptPosition;
+}
+```
+</details>
+
+Because you have already defined your TranscriptLabelRequest in terms of how you wish to store it in DreamPipe, you have no need to normalize your data. You can build your payload directly.
 
 Your data is now ready to send to the Event Receiver Service!

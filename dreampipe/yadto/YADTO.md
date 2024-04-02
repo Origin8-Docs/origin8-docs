@@ -30,7 +30,7 @@ For nested objects, you can set it on the `embeddedEntity` field. This field has
 For list values, you can use the `values` field which has a structure of `List<EntityPropertyValue>`.
 
 
-Here are the [currently available propertyTypes](../src/main/java/com/origin8/eventreceiver/adapters/dto/PropertyType.java).
+Here are the [currently available propertyTypes](../src/main/java/com/origin8/eventreceiver/producers/dto/PropertyType.java).
 
 ### Important fields
 You should have a field that acts an id. It must be unique for the entity it represents. The name should be added to the `identifierProperties` in your entity configuration in the ERS.
