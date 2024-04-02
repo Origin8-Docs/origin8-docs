@@ -1,15 +1,37 @@
-# <u>Writing Adapters</u>
+# <u>Writing Producers</u>
 
-The adapters are components responsible for extracting data and sending them to the Event Receiver Service. The adapter determines the structure of your entities and describes them explicitly, so they are understood downstream.
+The producers are components responsible for sending data to the Event Receiver Service. The producer determines the structure of your entities and describes them explicitly, so they are understood downstream.
+
+Producers can be written in two ways:
+#### Extractor
+- An Extractor Producer takes data from an external source, transforms it and then relays it to the ERS
+#### Direct
+- A Direct Producer generates its own data and sends it to the ERS
 
 The steps are generally as follows:
-1. Pull the raw data from your external source
-2. Rename and restructure your data.
+1. Pull the raw data from your external source (Extractor mode only)
+2. Rename and restructure your data. (Extractor mode only)
 3. Transform into the [YADTO](/dreampipe/yadto/YADTO.md) format. (This can be performed using a DreamPipe library)
 4. Send the YADTO data to the ERS.
 
+## <u>Unifying our Producers</u>
 
-## <u>A working example</u>
+You may have a webservice that generates data and wish to store it in DreamPipe directly. As well as data extracted from a 3rd party platform such as Salesforce. With DreamPipe, we unify our external and internal sources of data so that our architecture is the same for both. This allows us to replace third party tool functionality with our own seamlessly when we're ready. It also allows us to change vendors easily.
+
+Below is an example of an architecture where two sources are unified. An end user updates a Lead in Salesforce, for example, they update their name and date of birth. The user also adds a label to a transcript of a phone call that occurred for this lead.
+
+Transcript Service has its own web UI which the end user interacts with. It also writes the updates directly to the ERS. There's no database attached directly to the Transcript Service.
+
+In this example the end user adds a label to a transcript of a phone call, and then updates the Lead's name in Salesforce. You can see how the information quickly flows into the same path. And when we read the data, we use the same approach regardless of where the data was originally sourced from.
+
+![unified_write.png](unified_write.png)
+
+The Transcript Service can then read the current state from the Event Query Service as illustrated below:
+![transcript_read.png](transcript_read.png)
+
+## <u>A working example of an Extractor Producer</u>
+In this example, we're going to take data from Salesforce and transform it into a DreamPipe payload.
+
 For example, you may have pulled the following update from Salesforce for a Lead.
 <details>
 <summary><b>Expand to view JSON for Lead</b></summary>
@@ -122,8 +144,8 @@ public Map<String, EntityPropertyValue> transformJson(String jsonInput) {
                     .build();
 
     Map<String, EntityPropertyValue> dreamPipePayload = DreamPipePayload.builder()
-            .payload(campaignSnapshot)
-            .eventSource("myOrganization/salesforce-adapter") // eventSource is currently a required field
+            .payload(salesforceDreamPipeLead)
+            .eventSource("myOrganization/salesforce-extractor") // eventSource is currently a required field
             .eventVersion("1.0.0") // eventVersion is optional, you can use this for your own tracking of your object schema if you wish
             .build();
     return dreamPipePayload;
@@ -160,19 +182,3 @@ class SalesforceDreamPipeLead {
 </details>
 
 Your data is now ready to send to the Event Receiver Service!
-
-## <u>Writing data directly into DreamPipe</u>
-
-You may have a webservice that generates data and wish to store it in DreamPipe directly. At Origin8, we unify our external and internal sources of data so that our architecture is the same for both. This allows us to replace third party tool functionality with our own seamlessly when we're ready. It also allows us to change vendors easily.
-
-Below is an example of an architecture where two sources are unified. An end user updates a Lead in Salesforce, for example, they update their name and date of birth. The user also adds a label to a transcript of a phone call that occurred for this lead.
-
-Transcript Service has its own web UI which the end user interacts with. It also writes the updates directly to the ERS. There's no database attached directly to the Transcript Service.
-
-In this example the end user adds a label to a transcript of a phone call, and then updates the Lead's name in Salesforce. You can see how the information quickly flows into the same path. And when we read the data, we use the same approach regardless of where the data was originally sourced from.
-<<<<<<< Suggestion: Is the Transcript service different from an any other Adapter? Is there a difference between Send Update and Write Update? If not then I would suggest using same terminology for simplicity 
-<<<<<<< Suggestion: In the diagram, maybe rename `Transcript Service` to ` Transcript Adapter` for the sake of clarity
-![unified_write.png](unified_write.png)
-
-The Transcript Service can then read the current state from the Event Query Service as illustrated below: 
-![transcript_read.png](transcript_read.png)
