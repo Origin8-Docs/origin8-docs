@@ -56,64 +56,9 @@ You can initialize a basic Spring Boot project using [Spring Initializr](https:/
 ```
 </details>
 
-### 4. Configure your app.yaml
-
-- Rename your application.properties to an application.yml file   
-- B
-
-```yaml
-origin8:
-  ers:
-    pubsub:
-      autogenerate: true
-    modelConfigurations:
-##### Entity Configs
-      SalesforceLead:
-        entity:
-          kind: firstEntities
-          materializedViewKind: firstEntitiesMV
-          identifierProperties:
-            - CampaignId
-          timestampIdentifier: timestamp
-      TranscriptLabel:
-        entity:
-          kind: secondEntities
-          materializedViewKind: secondEntitiesMV
-          identifierProperties:
-            - CampaignId
-          timestampIdentifier: lastModified
-##################################################################################################################
-    updateTopicTemplate: "pst-Extraction_${entity}_Update"
-    updateSubscriptionTemplate: "psl-Extraction_${entity}_Update-ERS"
-    persistedTopicTemplate: "pst-Extraction_${entity}_Persisted"
-    bigQuerySubscriptionTemplate: "psl-Extraction_${entity}_Persisted_BigQuery-ERS"
-    mvSubscriptionTemplate: "psl-Extraction_${entity}_Persisted_MaterializedView-ERS"
-
-application:
-  bigQuery:
-    projectId: myGcpProjectId
-    dataset: myBigQueryDatasetName
-  datastore:
-    projectId: myGcpProjectIdForDatastore
-#    namespace: myNamespace # Optional
-  materializedViewDatastore:
-    projectId: myGcpProjectIdForDatastore
-#    namespace: myNamespace # Optional
-  event:
-    publisher:
-      topics:
-        extractionUpdateResultTopicId: projects/myPubsubProject/topics/extractionUpdateResultTopicId
-        materializedViewOperationTopicId: projects/myPubsubProject/topics/materializedViewOperationTopicId # Only required for autoprovisioning
-    subscriber:
-      subscriptions:
-        materializedViewOperationSubscriptionId: projects/myPubsubProject/subscriptions/materializedViewOperationTopicId-subscription
-```
-
-
-### Full pom.xml example for an ERS
-
+Your dependencies should now be complete and look like the below example.
 <details> 
-<summary><b>Click to view example</b></summary>
+<summary><b>Click to view a full pom.xml example</b></summary>
 
 ### Example pom.xml
 
@@ -179,5 +124,63 @@ application:
 ```
 </details>
 
+### 4. Configure your app.yaml
 
+- Rename your application.properties to an application.yml file   
+- Add a configuration for your entities.
+
+<details>
+<summary><b>Click to see application.yml example</b></summary>
+
+```yaml
+origin8:
+  ers:
+    pubsub:
+      autogenerate: true
+    modelConfigurations:
+##### Entity Configs
+      SalesforceLead:
+        entity:
+          kind: salesforceLeadEvents
+          materializedViewKind: salesforceLeads
+          identifierProperties:
+            - id
+          timestampIdentifier: timestamp
+      TranscriptLabel:
+        entity:
+          kind: transcriptLabelEvents
+          materializedViewKind: transcriptLabelsMv
+          identifierProperties:
+            - transcriptId
+          timestampIdentifier: timestamp
+##################################################################################################################
+    updateTopicTemplate: "pst-Extraction_${entity}_Update"
+    updateSubscriptionTemplate: "psl-Extraction_${entity}_Update-ERS"
+    persistedTopicTemplate: "pst-Extraction_${entity}_Persisted"
+    bigQuerySubscriptionTemplate: "psl-Extraction_${entity}_Persisted_BigQuery-ERS"
+    mvSubscriptionTemplate: "psl-Extraction_${entity}_Persisted_MaterializedView-ERS"
+
+application:
+  bigQuery:
+    projectId: myGcpProjectId
+    dataset: myBigQueryDatasetName
+  datastore:
+    projectId: myGcpProjectIdForDatastore
+#    namespace: myNamespace # Optional
+  materializedViewDatastore:
+    projectId: myGcpProjectIdForDatastore
+#    namespace: myNamespace # Optional
+  event:
+    publisher:
+      topics:
+        extractionUpdateResultTopicId: projects/myPubsubProject/topics/extractionUpdateResultTopicId
+        materializedViewOperationTopicId: projects/myPubsubProject/topics/materializedViewOperationTopicId # Only required for autoprovisioning
+    subscriber:
+      subscriptions:
+        materializedViewOperationSubscriptionId: projects/myPubsubProject/subscriptions/materializedViewOperationTopicId-subscription
+```
+
+</details>
+
+For in depth information on the app.yaml configuration, please see [Configuring your ERS.](/dreampipe/ers/configuring_your_ers.md)
 

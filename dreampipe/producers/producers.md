@@ -85,6 +85,7 @@ You may wish to pull in a subset of this data, and change the key values to your
 public SalesforceDreamPipeLead transformJson(String jsonInput) {
     SalesforceLead salesforceLead = new ObjectMapper().readValue(jsonInput, SalesforceLead.class);
     SalesforceDreamPipeLead salesforceDreamPipeLead = SalesforceDreamPipeLead.builder()
+                    .id(salesforceLead.getId())
                     .leadPhone(salesforceLead.getPhone())
                     .email(salesforceLead.getEmail())
                     .city(salesforceLead.getAddress().getCity())
@@ -99,6 +100,7 @@ public SalesforceDreamPipeLead transformJson(String jsonInput) {
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 class SalesforceLead {
+    private String Id;
     private String Phone;
     private String Email;
     private Date CreatedDate;
@@ -135,6 +137,7 @@ Now we will add a step that will transform it into a DreamPipe payload, ready to
 public Map<String, EntityPropertyValue> transformJson(String jsonInput) {
     SalesforceLead salesforceLead = new ObjectMapper().readValue(jsonInput, SalesforceLead.class);
     SalesforceDreamPipeLead salesforceDreamPipeLead = SalesforceDreamPipeLead.builder()
+                    .id(salesforceLead.getId())
                     .leadPhone(salesforceLead.getPhone())
                     .email(salesforceLead.getEmail())
                     .city(salesforceLead.getAddress().getCity())
@@ -154,6 +157,7 @@ public Map<String, EntityPropertyValue> transformJson(String jsonInput) {
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 class SalesforceLead {
+    private String Id;
     private String Phone;
     private String Email;
     private Date CreatedDate;
@@ -194,6 +198,7 @@ For example, you have received a request to create a new label in a transcript.
 
 ```java
 public Map<String, EntityPropertyValue> generateDreampipePayload(TranscriptLabelRequest transcriptLabelRequest) {
+    transcriptLabelRequest.setTimestamp(Instant.now());
     Map<String, EntityPropertyValue> dreamPipePayload = DreamPipePayload.builder()
             .payload(transcriptLabelRequest)
             .eventSource("myOrganization/transcript-service") // eventSource is currently a required field
@@ -208,6 +213,7 @@ class TranscriptLabelRequest {
     private String transcriptId;
     private String labelName;
     private int transcriptPosition;
+    private Instant timestamp;
 }
 ```
 </details>
