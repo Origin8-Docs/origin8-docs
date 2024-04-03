@@ -13,21 +13,21 @@ Below is an example architecture for a CQRS pattern where we wish to extract dat
 This architecture takes data from an external provider (in this case, Salesforce) and stores it as Event Sourced data. It then provides read only views which are accessible by an SQL-like query engine and by API. 
 
 In this example, the flow is as follows:
-1. The Salesforce Adapter calls the Salesforce API and retrieves some customer data. 
-2. The Salesforce Adapter normalizes the data and submits it to the Event Receiver Service (ERS). 
+1. The Salesforce Extractor calls the Salesforce API and retrieves some customer data. 
+2. The Salesforce Extractor normalizes the data and submits it to the Event Receiver Service (ERS). 
 3. The ERS then checks if the event contains new information, and if so, stores a new event in the event store.
 4. The relevant views are updated.
 
 If one were to develop this from scratch, it would take a considerable amount of time. With DreamPipe, it will be substantially quicker!
 
-### <u>The Adapters</u>
-The adapters need to normalize your data. You do not want to be constrained by your external providers API names for your entities. You also want to be decoupled from their data structures. These adapters are small layers that interpret the data and transform it into a DreamPipe format. This conversion is made easy with the use of DreamPipe's libraries.  
+### <u>The Producers</u>
+The producers need to normalize your data. You do not want to be constrained by your external providers API names for your entities. You also want to be decoupled from their data structures. These producers are small layers that interpret the data and transform it into a DreamPipe format. This conversion is made easy with the use of DreamPipe's libraries.  
 
 Once the conversion is complete, it's time to pass the event onto the Event Receiver Service.
 
 It's important to note that you can also store your own data directly into DreamPipe. If you were to write your own CRM system, you would use DreamPipe as your Database. This helps to unify your architecture between external and internal data sources.
 
-For more information, see the section on [Writing your Adapter](/dreampipe/adapters/writing_adapters.md)
+For more information, see the section on [Writing your Producers](/dreampipe/producers/producers)
 
 ### <u>The Event Receiver Service (ERS)</u>
 The Event Receiver Service is the most crucial component of the architecture. It receives updates and makes sense of the history of your entity. It understands the rules of your entities with configurations instead of code. By doing so, it makes adding new entities to your pipeline easy. It is the equivalent of your Command Service in the CQRS architecture.
