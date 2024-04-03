@@ -27,7 +27,7 @@ Once the conversion is complete, it's time to pass the event onto the Event Rece
 
 It's important to note that you can also store your own data directly into DreamPipe. If you were to write your own CRM system, you would use DreamPipe as your Database. This helps to unify your architecture between external and internal data sources.
 
-For more information, see the section on [Writing your Adapter](/dreampipe/producers/writing_producers.md)
+For more information, see the section on [Writing your Adapter](/dreampipe/producers/producers)
 
 ### <u>The Event Receiver Service (ERS)</u>
 The Event Receiver Service is the most crucial component of the architecture. It receives updates and makes sense of the history of your entity. It understands the rules of your entities with configurations instead of code. By doing so, it makes adding new entities to your pipeline easy. It is the equivalent of your Command Service in the CQRS architecture.

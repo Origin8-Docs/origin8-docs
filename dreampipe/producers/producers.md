@@ -1,4 +1,4 @@
-# <u>Writing Producers</u>
+# <u>Producers</u>
 
 The producers are components responsible for sending data to the Event Receiver Service. The producer determines the structure of your entities and describes them explicitly, so they are understood downstream.
 
