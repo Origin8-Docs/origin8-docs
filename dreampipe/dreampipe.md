@@ -5,7 +5,7 @@ DreamPipe is a customizable [Event Sourced](https://learn.microsoft.com/en-us/az
 
 ## <u>How does it work?</u>
 
-In a regular [CQRS pattern](https://learn.microsoft.com/en-us/azure/architecture/patterns/cqrs), you need to create your Command Service, and your Query Service. DreamPipe abstracts these concepts and exploits configuration rather than code to make bootstrapping your services as quick as possible.
+In a regular [CQRS pattern](https://learn.microsoft.com/en-us/azure/architecture/patterns/cqrs), you need to create a Command Service and a Query Service. DreamPipe abstracts these concepts and exploits configuration rather than code to make bootstrapping your services as quick as possible.
 
 Below is an example architecture for a CQRS pattern where we wish to extract data from Salesforce. 
 ![basic_architecture.png](basic_architecture.png)
@@ -27,12 +27,14 @@ Once the conversion is complete, it's time to pass the event onto the Event Rece
 
 It's important to note that you can also store your own data directly into DreamPipe. If you were to write your own CRM system, you would use DreamPipe as your Database. This helps to unify your architecture between external and internal data sources.
 
-For more information, see the section on [Writing your Producers](/dreampipe/producers/producers)
+For more information, see the section on [Writing your Producers](/dreampipe/producers/producers.md).
 
 ### <u>The Event Receiver Service (ERS)</u>
 The Event Receiver Service is the most crucial component of the architecture. It receives updates and makes sense of the history of your entity. It understands the rules of your entities with configurations instead of code. By doing so, it makes adding new entities to your pipeline easy. It is the equivalent of your Command Service in the CQRS architecture.
 
 DreamPipe provides a library that bootstraps your own Event-Receiver-Service in minutes. And then you add a simple entity configuration.
+
+Learn how to [Bootstrap an ERS](/dreampipe/ers/boostrap_an_ers.md) here
 
 ### <u>The Event Query Service (EQS) </u>
 The Event Query Service is the partner to the ERS. It makes sense of how to read the event sourced data. Again, DreamPipe provides libraries that help you bootstrap a service that will provide all sorts of read capabilities to your data.
