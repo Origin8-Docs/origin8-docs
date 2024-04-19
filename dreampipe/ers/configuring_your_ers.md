@@ -32,6 +32,7 @@ origin8:
     persistedTopicTemplate: "pst-Extraction_${entity}_Persisted"
     bigQuerySubscriptionTemplate: "psl-Extraction_${entity}_Persisted_BigQuery-ERS"
     mvSubscriptionTemplate: "psl-Extraction_${entity}_Persisted_MaterializedView-ERS"
+    pubsubGcpProjectId: myPubsubProject # Optional, will use default GCP project defined by the envar GOOGLE_CLOUD_PROJECT
 
 application:
   bigQuery:
@@ -64,6 +65,7 @@ application:
 | `origin8.ers.persistedTopicTemplate`                                                 | String             | No                                   | None          | If you use auto provisioning, this template determines the naming pattern of your persisted topics. See [Auto provisioning](/dreampipe/ers/autoprovisioning.md)                                       |
 | `origin8.ers.bigQuerySubscriptionTemplate`                                           | String             | No                                   | None          | If you use auto provisioning, this template determines the naming pattern of your Persisted subscriptions used for BigQuery updates. See [Auto provisioning](/dreampipe/ers/autoprovisioning.md)      |
 | `origin8.ers.mvSubscriptionTemplate`                                                 | String             | No                                   | None          | If you use auto provisioning, this template determines the naming pattern of your Persisted subscriptions used for Material View updates. See [Auto provisioning](/dreampipe/ers/autoprovisioning.md) |
+| `origin8.ers.pubsubGcpProjectId`                                                     | String             | No                                   | None          | If you use auto provisioning, this determines which project will be used to provision your pubsub resources. Will default to current GCP project which is set by the GOOGLE_CLOUD_PROJECT envar       |
 | `application.bigQuery.projectId`                                                     | String             | Yes                                  | None          | The GCP project where you wish to store your BigQuery view of your data                                                                                                                               |
 | `application.bigQuery.dataset`                                                       | String             | Yes                                  | None          | The dataset name for your BigQuery tables                                                                                                                                                             |
 | `application.datastore.projectId`                                                    | String             | Yes                                  | None          | The GCP project for your Event Store                                                                                                                                                                  |
