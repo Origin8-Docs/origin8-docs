@@ -97,6 +97,12 @@ Your dependencies should now be complete and look like the below example.
 	</dependencies>
 
 	<build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
 		<extensions>
 			<extension>
 				<groupId>com.google.cloud.artifactregistry</groupId>
@@ -166,15 +172,13 @@ application:
     dataset: myBigQueryDatasetName
   datastore:
     projectId: myGcpProjectIdForDatastore
-#    namespace: myNamespace # Optional
   materializedViewDatastore:
     projectId: myGcpProjectIdForDatastore
-#    namespace: myNamespace # Optional
   event:
     publisher:
       topics:
         extractionUpdateResultTopicId: projects/myPubsubProject/topics/extractionUpdateResultTopicId
-        materializedViewOperationTopicId: projects/myPubsubProject/topics/materializedViewOperationTopicId # Only required for autoprovisioning
+        materializedViewOperationTopicId: projects/myPubsubProject/topics/materializedViewOperationTopicId # Only required if autoprovisioning is enabled
     subscriber:
       subscriptions:
         materializedViewOperationSubscriptionId: projects/myPubsubProject/subscriptions/materializedViewOperationTopicId-subscription
